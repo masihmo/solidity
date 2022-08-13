@@ -3,7 +3,8 @@ pragma solidity 0.8.7;
 
     contract Lottery {
         
-        event BuyerID (string indexed BuyerName, uint indexed Amount);
+        event BuyerID(address indexed BuyerAdrress , string indexed BuyerName, uint Price, uint indexed Amount);
+        event WinnerID(string indexed WinnerName ,address WinnerAddress , uint Prize);
         
         uint TicketPrice;
         uint AllMoney;
@@ -21,7 +22,7 @@ pragma solidity 0.8.7;
            Owner = msg.sender ;
            TicketPrice = (_TicketPricePerOneWei * 1 wei);
            OwnerPercentage = (AllTickets * 185 / 10000);
-           EndTime = block.timestamp + (_EndTimeByDay * 1 seconds);
+           EndTime = block.timestamp + (_EndTimeByDay * 86400 seconds);
        }
 
         modifier OnlyOwner {
@@ -50,7 +51,7 @@ pragma solidity 0.8.7;
             BIndex = BIndex + _TicketAmount;
             Buyers.push(Buyer( _BName, BIndex, _TicketAmount, msg.sender, false));
             payable(msg.sender).transfer(msg.value);
-            emit BuyerID ( _BName, _TicketAmount);
+            emit BuyerID (msg.sender, _BName, TicketPrice, _TicketAmount);
         }
         function startlottery() public OnlyOwner {
             require(block.timestamp > EndTime);
@@ -60,6 +61,7 @@ pragma solidity 0.8.7;
             WinnerMap[WinnerIndex].IsWon = true;
             payable(WinnerMap[WinnerIndex].TicketOwner).transfer(WinnerMoney);
             IsEnd = true;
+            emit WinnerID((WinnerMap[WinnerIndex].BName), (WinnerMap[WinnerIndex].TicketOwner), WinnerMoney);
         }
         function random(uint count) private view returns(uint) {
             uint rand = uint(keccak256(abi.encodePacked(block.timestamp,block.difficulty))) % count;
