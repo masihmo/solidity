@@ -4,7 +4,7 @@ pragma solidity 0.8.13;
 
 contract HotelService {
 
-    IERC20  mytoken = IERC20( 0xF2Ed42251F47fD00B382dd5AdF603426Bdafe8f9);
+
     event SignUpEvent(address Owner,string indexed UserName, string indexed UserLastName, uint UserPrice);
     event EnteredRome(address indexed  Owner);
 
